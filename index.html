@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>新闻卡片 Demo</title>
+
+  <!-- Swiper CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css">
+
+  <style>
+    :root{
+      --bg:#0b0f1a;
+      --card:#121a2b;
+      --muted:#9aa6bf;
+      --text:#eaf0ff;
+      --shadow: 0 20px 60px rgba(0,0,0,.45);
+      --radius: 22px;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      background: radial-gradient(900px 500px at 20% 10%, rgba(120,140,255,.15), transparent 60%),
+                  radial-gradient(900px 500px at 90% 30%, rgba(140,255,220,.10), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+      font-family: system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    header{
+      padding: 18px 16px 10px;
+      max-width: 980px;
+      margin: 0 auto;
+      display:flex;
+      gap:12px;
+      align-items:flex-end;
+      justify-content:space-between;
+    }
+    .title{
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: .3px;
+    }
+    .hint{
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 10px 16px 28px;
+    }
+
+    /* Swiper size */
+    .swiper{
+      width: 100%;
+      padding: 14px 0 34px;
+    }
+    .swiper-slide{
+      display:flex;
+      justify-content:center;
+    }
+    .swiper-pagination-bullet{
+      opacity:.35;
+    }
+    .swiper-pagination-bullet-active{
+      opacity:1;
+    }
+
+    /* Card Flip */
+    .flip{
+      width: min(86vw, 720px);
+      height: min(64vh, 520px);
+      perspective: 1200px;
+    }
+    .flip-inner{
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 560ms cubic-bezier(.2,.8,.2,1);
+    }
+    .flip.is-flipped .flip-inner{
+      transform: rotateY(180deg);
+    }
+
+    .card{
+      position:absolute;
+      inset:0;
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      backface-visibility: hidden;
+    }
+
+    .front{
+      padding: 18px 18px 14px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .meta{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .tag{
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(120,140,255,.14);
+      border: 1px solid rgba(120,140,255,.22);
+      color:#dbe3ff;
+    }
+    .headline{
+      font-size: clamp(20px, 3.6vw, 34px);
+      font-weight: 800;
+      line-height: 1.18;
+      letter-spacing: .2px;
+      margin-top: 6px;
+    }
+    .summary{
+      color: rgba(234,240,255,.86);
+      font-size: 14px;
+      line-height: 1.55;
+      margin-top: 2px;
+    }
+    .front-footer{
+      margin-top:auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .btn{
+      appearance:none;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 650;
+    }
+    .btn:active{ transform: translateY(1px); }
+
+    .cover{
+      height: 44%;
+      min-height: 160px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(120,140,255,.22), rgba(140,255,220,.14));
+      border: 1px solid rgba(255,255,255,.10);
+      position: relative;
+      overflow:hidden;
+    }
+    .cover::after{
+      content:"";
+      position:absolute;
+      inset:-80px;
+      background: radial-gradient(closest-side, rgba(255,255,255,.18), transparent 70%);
+      transform: translate(30%, 10%);
+    }
+
+    .back{
+      transform: rotateY(180deg);
+      padding: 18px;
+      display:flex;
+      flex-direction:column;
+      gap: 12px;
+      background: rgba(18,26,43,.92);
+    }
+    .back h2{
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.25;
+    }
+    .detail{
+      color: rgba(234,240,255,.9);
+      font-size: 14px;
+      line-height: 1.65;
+      overflow:auto;
+      padding-right: 6px;
+    }
+    .detail::-webkit-scrollbar{ width: 8px; }
+    .detail::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.16); border-radius: 999px; }
+
+    .back-actions{
+      margin-top:auto;
+      display:flex;
+      gap:10px;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    a.link{
+      color:#cfe3ff;
+      text-decoration:none;
+      border-bottom: 1px dashed rgba(207,227,255,.45);
+      padding-bottom: 2px;
+    }
+
+    /* Desktop arrows optional */
+    .nav{
+      display:none;
+    }
+    @media (min-width: 860px){
+      .nav{ display:block; }
+      .swiper-button-prev, .swiper-button-next{
+        color: rgba(255,255,255,.85);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <div class="title">新闻卡片（左右滑 / 点击翻面看详情）</div>
+      <div class="hint">左右滑切换；点“查看详情”翻到背面；点“返回”翻回正面</div>
+    </div>
+    <div class="hint">适合直接发链接给老板</div>
+  </header>
+
+  <div class="wrap">
+    <div class="swiper">
+      <div class="swiper-wrapper" id="slides"></div>
+
+      <div class="swiper-pagination"></div>
+      <div class="nav swiper-button-prev"></div>
+      <div class="nav swiper-button-next"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
+  <script>
+    // 你把这里的数据换成你的新闻即可（标题/摘要/详情/来源链接/时间/标签）
+    const news = [
+      {
+        tag: "行业",
+        time: "2026-01-28",
+        title: "示例：某游戏新版本发布，核心改动聚焦长线留存",
+        summary: "一句话摘要：讲清楚这条新闻的结论和影响点（建议 1~2 行）。",
+        detail:
+`这里放详情内容（支持多段）。
+你可以写：背景、发生了什么、影响、你想给老板看的结论。
+
+- 关键点 1：……
+- 关键点 2：……
+- 你建议下一步：……`,
+        source: "https://example.com"
+      },
+      {
+        tag: "产品",
+        time: "2026-01-27",
+        title: "示例：某平台上线新分发位，内容曝光逻辑有调整",
+        summary: "一句话摘要：为什么重要、跟我们有什么关系。",
+        detail:
+`详细说明：
+1）变化点
+2）可能带来的机会/风险
+3）建议动作`,
+        source: "https://example.com"
+      },
+      {
+        tag: "舆情",
+        time: "2026-01-26",
+        title: "示例：社区争议事件发酵，讨论从A扩散到B平台",
+        summary: "一句话摘要：争议主题是什么、扩散速度如何。",
+        detail:
+`你可以在这里写监测结论、风险等级、是否介入以及介入话术要点。`,
+        source: "https://example.com"
+      }
+    ];
+
+    const slidesEl = document.getElementById("slides");
+
+    slidesEl.innerHTML = news.map((n, idx) => `
+      <div class="swiper-slide">
+        <div class="flip" data-idx="${idx}">
+          <div class="flip-inner">
+            <!-- FRONT -->
+            <section class="card front" role="group" aria-label="新闻卡片正面">
+              <div class="cover"></div>
+
+              <div class="meta">
+                <span class="tag">${escapeHtml(n.tag)}</span>
+                <span>${escapeHtml(n.time)}</span>
+              </div>
+
+              <div class="headline">${escapeHtml(n.title)}</div>
+              <div class="summary">${escapeHtml(n.summary)}</div>
+
+              <div class="front-footer">
+                <span>点击查看详情</span>
+                <button class="btn js-flip">查看详情</button>
+              </div>
+            </section>
+
+            <!-- BACK -->
+            <section class="card back" role="group" aria-label="新闻卡片背面">
+              <div class="meta">
+                <span class="tag">${escapeHtml(n.tag)}</span>
+                <span>${escapeHtml(n.time)}</span>
+              </div>
+
+              <h2>${escapeHtml(n.title)}</h2>
+
+              <div class="detail">${escapeHtml(n.detail).replace(/\n/g,"<br>")}</div>
+
+              <div class="back-actions">
+                <button class="btn js-back">返回</button>
+                <a class="link" href="${n.source}" target="_blank" rel="noreferrer">打开来源链接</a>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    `).join("");
+
+    // 初始化 Swiper
+    const swiper = new Swiper('.swiper', {
+      slidesPerView: 1,
+      spaceBetween: 18,
+      centeredSlides: true,
+      grabCursor: true,
+      pagination: { el: '.swiper-pagination', clickable: true },
+      navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+      // 防止滑动时误触点击：需要点击才翻面
+      threshold: 8,
+    });
+
+    // 翻面逻辑
+    document.addEventListener("click", (e) => {
+      const flipBtn = e.target.closest(".js-flip");
+      const backBtn = e.target.closest(".js-back");
+
+      if (flipBtn) {
+        const flip = flipBtn.closest(".flip");
+        flip.classList.add("is-flipped");
+      }
+      if (backBtn) {
+        const flip = backBtn.closest(".flip");
+        flip.classList.remove("is-flipped");
+      }
+    });
+
+    // 可选：切到下一张时自动翻回正面（避免老板滑到一半还在背面）
+    swiper.on("slideChangeTransitionStart", () => {
+      document.querySelectorAll(".flip.is-flipped").forEach(el => el.classList.remove("is-flipped"));
+    });
+
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+  </script>
+</body>
+</html>
