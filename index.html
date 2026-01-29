@@ -486,9 +486,6 @@
       <div class="swiper-wrapper" id="slides"></div>
       <div class="swiper-pagination"></div>
 
-      <!-- 导航按钮：横向显示；竖向会被 CSS 隐藏 -->
-      <button class="nav-btn swiper-button-prev" type="button" aria-label="上一条"></button>
-      <button class="nav-btn swiper-button-next" type="button" aria-label="下一条"></button>
     </div>
   </div>
 
@@ -639,9 +636,7 @@
         mousewheel: isVertical ? { forceToAxis: true, releaseOnEdges: true } : false,
         pagination: { el: '.swiper-pagination', clickable: true },
 
-        navigation: isVertical
-          ? false
-          : { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+        navigation: false,
 
         breakpoints: isVertical
           ? { 320: { spaceBetween: 16 }, 768: { spaceBetween: 20 } }
@@ -802,4 +797,5 @@
   </script>
 </body>
 </html>
+
 
