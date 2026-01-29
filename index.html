@@ -67,7 +67,7 @@
       opacity: 0.8;
     }
 
-    /* ✅ toolbar 改成两行：搜索一行，目录&开关一行 */
+    /* toolbar 两行 */
     .toolbar {
       margin-top: 18px;
       display: flex;
@@ -169,11 +169,39 @@
       color:#a5b4fc;
       margin-right:8px;
       opacity:.9;
+      flex: 0 0 auto;
     }
-    .toc-item .toc-text{
+
+    /* TOC：带时间的一行布局（只保留一份，去重） */
+    .toc-row{
+      display:flex;
+      align-items:flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .toc-left{
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+    .toc-time{
+      flex: 0 0 auto;
+      font-size: 11px;
+      color: rgba(148,163,184,.85);
+      margin-top: 1px;
+      white-space: nowrap;
+    }
+    .toc-text{
+      display:block;
       color: #eaf0ff;
       font-size: 13px;
       line-height: 1.35;
+      margin-top: 2px;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
     }
     .toc-empty{
       color: rgba(148,163,184,.9);
@@ -181,7 +209,7 @@
       padding: 8px 4px;
     }
 
-    /* ✅ 竖向滑动开关 */
+    /* 竖向滑动开关 */
     .switch {
       height: 44px;
       display: inline-flex;
@@ -247,10 +275,13 @@
       position: relative;
     }
 
-    /* ✅ 竖向模式需要一个明确高度，否则鼠标滚轮&触控体验不好 */
+    /* 竖向模式：需要明确高度 */
+    body.is-vertical .wrap{
+      align-items: flex-start;
+    }
     body.is-vertical .swiper{
-      height: min(780px, 76vh);
-      padding: 20px 0;
+      height: min(820px, 78vh);
+      padding: 18px 0;
     }
 
     .swiper-slide {
@@ -267,28 +298,13 @@
     }
 
     body.is-vertical .flip{
-  height: 100%;                 /* 跟随 swiper 高度 */
-  width: min(92vw, 440px);
+      height: 100%;
+      width: min(92vw, 440px);
     }
-    
     body.is-vertical .swiper-slide{
-  height: 100%;
-  display: flex;
-  align-items: stretch;
-    }
-
-    body.is-vertical .swiper-button-prev{
-  left: auto;
-  right: 18px;
-  top: 18px;
-  transform: none;
-    }
-
-body.is-vertical .swiper-button-next{
-  left: auto;
-  right: 18px;
-  bottom: 18px;
-  transform: none;
+      height: 100%;
+      display: flex;
+      align-items: stretch;
     }
 
     .flip-inner {
@@ -483,7 +499,7 @@ body.is-vertical .swiper-button-next{
       border-radius: 5px;
     }
 
-    /* ✅ 竖向模式：分页点改为右侧竖排 */
+    /* 竖向模式：分页点右侧竖排 */
     body.is-vertical .swiper-pagination{
       position: absolute;
       right: 18px;
@@ -496,34 +512,22 @@ body.is-vertical .swiper-button-next{
       flex-direction: column;
       gap: 10px;
     }
-    
     body.is-vertical .swiper-pagination-bullet{
-      margin: 0 !important;          /* 取消默认横向 margin */
-    }
-    
-    /* ✅ 竖向模式：Swiper 容器高度更像资讯流（一屏一张） */
-    body.is-vertical .wrap{
-      align-items: flex-start;       /* 更像“上方开始”而不是垂直居中 */
-    }
-    
-    body.is-vertical .swiper{
-      height: min(820px, 78vh);      /* 你也可以改成 80vh / 85vh */
-      padding: 18px 0;
+      margin: 0 !important;
     }
 
-
-    
-    /* ✅ 新的导航按钮（电脑端显示，移动端隐藏） */
+    /* =========================
+       右侧悬浮导航按钮（仅箭头）
+       ========================= */
     .nav-btn{
       position: absolute;
       z-index: 20;
-      width: auto;
+      width: 44px;
       height: 44px;
-      padding: 0 14px;
       border-radius: 999px;
       display: inline-flex;
       align-items: center;
-      gap: 10px;
+      justify-content: center;
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--glass-border);
       backdrop-filter: blur(12px);
@@ -531,6 +535,7 @@ body.is-vertical .swiper-button-next{
       cursor: pointer;
       transition: all .25s ease;
       user-select: none;
+      padding: 0;
     }
     .nav-btn:hover{
       background: rgba(255, 255, 255, 0.10);
@@ -538,144 +543,72 @@ body.is-vertical .swiper-button-next{
       color: #a5b4fc;
       transform: translateY(-1px);
     }
-    .nav-btn::before{
+    .nav-btn:focus-visible{
+      outline: 2px solid rgba(79,110,247,.55);
+      outline-offset: 3px;
+    }
+
+    /* 只保留箭头：去掉任何文案 */
+    .nav-btn::after { content: ""; }
+
+    /* 清掉 Swiper 可能注入的默认箭头（保险） */
+    .swiper-button-prev::after,
+    .swiper-button-next::after{
+      content: "" !important;
+    }
+
+    /* 默认（横向）：prev=← next=→ */
+    .swiper-button-prev.nav-btn::before{
       content: "←";
       font-weight: 900;
+      font-size: 16px;
+      line-height: 1;
       opacity: .95;
     }
-    .nav-btn::after{
-      content: attr(data-label);
-      font-size: 13px;
-      font-weight: 700;
-      opacity: .92;
+    .swiper-button-next.nav-btn::before{
+      content: "→";
+      font-weight: 900;
+      font-size: 16px;
+      line-height: 1;
+      opacity: .95;
     }
 
-    /* 横向：左右居中 */
-    .swiper-button-prev{ left: 10px; top: 50%; transform: translateY(-50%); }
-    .swiper-button-next{ right: 10px; top: 50%; transform: translateY(-50%); }
-    .swiper-button-next::before{ content:"→"; }
+    /* 竖向：prev=↑ next=↓ */
+    body.is-vertical .swiper-button-prev.nav-btn::before{ content: "↑"; }
+    body.is-vertical .swiper-button-next.nav-btn::before{ content: "↓"; }
 
-    /* 竖向：上下居中（按钮变成 ↑/↓，位置变 top/bottom 中心） */
-    body.is-vertical .swiper-button-prev{
-      left: 50%;
-      top: 10px;
-      transform: translateX(-50%);
-    }
-    body.is-vertical .swiper-button-next{
-      left: 50%;
-      right: auto;
-      top: auto;
-      bottom: 10px;
-      transform: translateX(-50%);
-    }
-    body.is-vertical .swiper-button-prev::before{ content:"↑"; }
-    body.is-vertical .swiper-button-next::before{ content:"↓"; }
+    /* 桌面端：按钮贴右侧，竖排居中 */
+    @media (min-width: 769px) {
+      /* 给右侧按钮留安全区，避免挡卡片 */
+      .swiper { padding-right: 92px; }
 
-    
-      /* 防止长标题把时间挤掉 */
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-    }
-    
-        /* ✅ TOC：时间样式 */
-    .toc-row{
-      display:flex;
-      align-items:flex-start;
-      justify-content: space-between;
-      gap: 10px;
-    }
-    
-    .toc-left{
-      min-width: 0;
-    }
-    
-    .toc-time{
-      flex: 0 0 auto;
-      font-size: 11px;
-      color: rgba(148,163,184,.85);
-      margin-top: 1px;
-      white-space: nowrap;
-    }
-    
-    .toc-text{
-      display:block;
-      color: #eaf0ff;
-      font-size: 13px;
-      line-height: 1.35;
-      margin-top: 2px;
-    
-      /* 防止长标题把时间挤掉 */
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-}
-
-          /* =========================
-         1) 右侧导航按钮：去文字 + 右侧悬浮
-         ========================= */
-      
-      
-      /* ✅ 右侧悬浮：两个按钮竖排在右侧中间 */
-      @media (min-width: 769px) {
-        /* 给右侧按钮留“安全区”，不挡卡片 */
-        .swiper { padding-right: 92px; }
-      
-        /* 统一让 prev/next 都贴右侧 */
-        .swiper-button-prev,
-        .swiper-button-next{
-          left: auto !important;
-          right: 16px !important;
-          transform: none !important;
-        }
-      
-        /* 横向模式：两个按钮上下排在右侧中间 */
-        body:not(.is-vertical) .swiper-button-prev{
-          top: calc(50% - 34px) !important;
-        }
-        body:not(.is-vertical) .swiper-button-next{
-          top: calc(50% + 34px) !important;
-        }
-      
-        /* 竖向模式：也固定在右侧（更像阅读器） */
-        body.is-vertical .swiper-button-prev{
-          top: calc(50% - 34px) !important;
-        }
-        body.is-vertical .swiper-button-next{
-          top: calc(50% + 34px) !important;
-          bottom: auto !important;
-        }
-      }
-      
-      /* =========================
-         2) 横向模式：其它卡片虚焦
-         ========================= */
-      
-      /* 只在横向时生效 */
-      body:not(.is-vertical) .swiper-slide .flip{
-        transition: filter .25s ease, opacity .25s ease, transform .25s ease;
-      }
-      
-      /* 非当前卡片：虚焦 + 降低不透明度 + 轻微缩小 */
-      body:not(.is-vertical) .swiper-slide:not(.swiper-slide-active) .flip{
-        filter: blur(2.6px);
-        opacity: .45;
-        transform: scale(.965);
-      }
-      
-      /* 当前卡片：保持清晰 */
-      body:not(.is-vertical) .swiper-slide-active .flip{
-        filter: none;
-        opacity: 1;
-        transform: scale(1);
+      .swiper-button-prev,
+      .swiper-button-next{
+        left: auto !important;
+        right: 16px !important;
+        transform: none !important;
       }
 
-    
+      .swiper-button-prev{ top: calc(50% - 34px) !important; }
+      .swiper-button-next{ top: calc(50% + 34px) !important; }
+    }
 
+    /* 横向模式：非当前卡片虚焦 */
+    body:not(.is-vertical) .swiper-slide .flip{
+      transition: filter .25s ease, opacity .25s ease, transform .25s ease;
+    }
+    body:not(.is-vertical) .swiper-slide:not(.swiper-slide-active) .flip{
+      filter: blur(2.6px);
+      opacity: .45;
+      transform: scale(.965);
+    }
+    body:not(.is-vertical) .swiper-slide-active .flip{
+      filter: none;
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* 移动端：隐藏导航按钮 */
     @media (max-width: 768px) {
       header { padding: 30px 20px 10px; }
       .title { font-size: 24px; }
@@ -684,12 +617,12 @@ body.is-vertical .swiper-button-next{
     }
   </style>
 </head>
+
 <body>
   <header>
     <div class="title">精选游戏资讯</div>
     <div class="hint" id="hintText">滑动切换卡片 · 点击查看更多内容</div>
 
-    <!-- ✅ 两行布局 -->
     <div class="toolbar">
       <div class="toolbar-row">
         <div class="search">
@@ -721,9 +654,9 @@ body.is-vertical .swiper-button-next{
       <div class="swiper-wrapper" id="slides"></div>
       <div class="swiper-pagination"></div>
 
-      <!-- ✅ 导航按钮换成 button + 文案 -->
-      <button class="nav-btn swiper-button-prev" type="button" aria-label="上一条" data-label="上一条"></button>
-      <button class="nav-btn swiper-button-next" type="button" aria-label="下一条" data-label="下一条"></button>
+      <!-- 导航按钮：仅箭头 -->
+      <button class="nav-btn swiper-button-prev" type="button" aria-label="上一条"></button>
+      <button class="nav-btn swiper-button-next" type="button" aria-label="下一条"></button>
     </div>
   </div>
 
@@ -771,7 +704,7 @@ body.is-vertical .swiper-button-next{
         time: "2026-01",
         title: "Bruno Mars在《Roblox》UGC游戏中的虚拟演出，最高吸引1280万同时在线用户",
         summary: "该演出在 14 个国家同步直播，直播观看人数约1000万，活动期间共发放 542 万件定制brainrot收藏品，并在社交平台上累计产生 5300 万次视频观看。",
-        detail: `补充\n- 这里你原来 detail 复用了法国那段，我先保留结构，你可以替换为演出细节（同时在线、道具发放、观看量、UGC合作形式等）。`,
+        detail: `补充\n- 这里你原来 detail 复用了别的段落，我先保留结构\n- 你可以替换为演出细节（同时在线、道具发放、观看量、UGC合作形式等）`,
         source: "#",
         cover: "images/mars.png"
       }
@@ -790,14 +723,11 @@ body.is-vertical .swiper-button-next{
       hintText.textContent = isVertical
         ? '上下滑动切换卡片 · 点击查看更多内容'
         : '左右滑动切换卡片 · 点击查看更多内容';
+    }
 
-      // 同时把按钮文案也换一下（竖向更直观）
-      const prevBtn = document.querySelector('.swiper-button-prev');
-      const nextBtn = document.querySelector('.swiper-button-next');
-      if (prevBtn && nextBtn) {
-        prevBtn.dataset.label = isVertical ? '上一条' : '上一条';
-        nextBtn.dataset.label = isVertical ? '下一条' : '下一条';
-      }
+    function resetFlips(){
+      document.querySelectorAll('.flip.is-flipped')
+        .forEach(el => el.classList.remove('is-flipped'));
     }
 
     function initSwiper() {
@@ -811,7 +741,6 @@ body.is-vertical .swiper-button-next{
         slidesPerView: isVertical ? 1 : 'auto',
         spaceBetween: isVertical ? 20 : 30,
 
-        // ✅ 竖向时开鼠标滚轮更舒服；横向不强行抢滚轮
         mousewheel: isVertical ? { forceToAxis: true, releaseOnEdges: true } : false,
 
         pagination: { el: '.swiper-pagination', clickable: true },
@@ -819,14 +748,17 @@ body.is-vertical .swiper-button-next{
 
         breakpoints: isVertical
           ? { 320: { spaceBetween: 16 }, 768: { spaceBetween: 20 } }
-          : { 320: { spaceBetween: 20 }, 768: { spaceBetween: 40 } },
+          : { 320: { spaceBetween: 20 }, 768: { spaceBetween: 40 } }, // ✅ 必须有逗号
 
         slideToClickedSlide: true,
         watchSlidesProgress: true,
 
-
-        
+        on: {
+          init() { this.update(); }
+        }
       });
+
+      swiper.update();
     }
 
     function renderSlides(list) {
@@ -892,7 +824,6 @@ body.is-vertical .swiper-button-next{
         </div>
       `).join("");
 
-
       tocList.querySelectorAll(".toc-item").forEach(el => {
         el.addEventListener("click", () => {
           const i = Number(el.dataset.idx);
@@ -917,6 +848,7 @@ body.is-vertical .swiper-button-next{
           return hay.includes(q);
         });
       }
+      resetFlips();
       renderSlides(currentList);
       renderTOC(currentList);
     }
@@ -925,7 +857,7 @@ body.is-vertical .swiper-button-next{
       const card = document.getElementById(`card-${index}`);
       if (card) card.classList.toggle('is-flipped');
     }
-    window.toggleFlip = toggleFlip; // 让 inline onclick 可用
+    window.toggleFlip = toggleFlip;
 
     /* 搜索框事件 */
     document.getElementById("searchInput")?.addEventListener("input", debounce(applyFilter, 120));
@@ -935,24 +867,13 @@ body.is-vertical .swiper-button-next{
       applyFilter();
     });
 
-    /* ✅ 竖向开关事件：切换方向 + 重建 swiper */
+    /* 竖向开关事件 */
     dirToggle?.addEventListener("change", () => {
       isVertical = !!dirToggle.checked;
-      setDirectionUI();
-      initSwiper();
-      swiper.slideTo(0, 0);
-
-      function resetFlips(){
-      document.querySelectorAll('.flip.is-flipped')
-        .forEach(el => el.classList.remove('is-flipped'));
-          }
-      
       resetFlips();
       setDirectionUI();
       initSwiper();
       swiper.slideTo(0, 0);
-      
-            
     });
 
     /* 目录开关 */
@@ -982,7 +903,3 @@ body.is-vertical .swiper-button-next{
   </script>
 </body>
 </html>
-
-
-
-
