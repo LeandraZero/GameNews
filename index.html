@@ -50,6 +50,108 @@
       text-align: center;
     }
 
+    .toolbar{
+  margin-top: 18px;
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+    .search{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      width:min(720px, 92vw);
+      padding:10px 12px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+    }
+    
+    .search input{
+      flex:1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+    .search input::placeholder{ color: rgba(148,163,184,.85); }
+    
+    .clear-btn{
+      background: rgba(255,255,255,.06);
+      color: var(--text-primary);
+      border: 1px solid var(--glass-border);
+      padding:8px 12px;
+      border-radius: 12px;
+      cursor:pointer;
+    }
+    
+    .toc-wrap{ position: relative; }
+    .toc-btn{
+      height: 44px;
+      padding: 0 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.04);
+      color: var(--text-primary);
+      border: 1px solid var(--glass-border);
+      cursor:pointer;
+    }
+    
+    .toc-panel{
+      position:absolute;
+      right:0;
+      top:52px;
+      width:min(380px, 92vw);
+      max-height: 60vh;
+      overflow:auto;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(15,23,42,.92);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--shadow-lg);
+      display:none;
+      z-index: 50;
+    }
+    .toc-panel.open{ display:block; }
+    
+    .toc-title{
+      font-weight: 800;
+      color: #a5b4fc;
+      margin-bottom: 10px;
+    }
+    
+    .toc-item{
+      padding: 10px 10px;
+      border-radius: 14px;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+    .toc-item:hover{
+      background: rgba(255,255,255,.04);
+      border-color: rgba(255,255,255,.08);
+    }
+    .toc-item .toc-tag{
+      display:inline-block;
+      font-size: 11px;
+      color:#a5b4fc;
+      margin-right:8px;
+      opacity:.9;
+    }
+    .toc-item .toc-text{
+      color: #eaf0ff;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .toc-empty{
+      color: rgba(148,163,184,.9);
+      font-size: 13px;
+      padding: 8px 4px;
+    }
+
+
     .title {
       font-size: 28px;
       font-weight: 900;
@@ -323,7 +425,23 @@
   <header>
     <div class="title">精选游戏资讯</div>
     <div class="hint">左右滑动切换卡片 · 点击查看更多内容</div>
+  
+    <div class="toolbar">
+      <div class="search">
+        <input id="searchInput" type="search" placeholder="搜索标题 / 标签 / 关键词…" />
+        <button id="clearBtn" class="clear-btn" type="button">清空</button>
+      </div>
+  
+      <div class="toc-wrap">
+        <button id="tocToggle" class="toc-btn" type="button">目录</button>
+        <div id="tocPanel" class="toc-panel">
+          <div class="toc-title">目录</div>
+          <div id="tocList" class="toc-list"></div>
+        </div>
+      </div>
+    </div>
   </header>
+
 
   <div class="wrap">
     <div class="swiper">
@@ -385,71 +503,155 @@
       }
     ];
 
-    const container = document.getElementById('slides');
-    
-    news.forEach((item, index) => {
-      const slide = document.createElement('div');
-      slide.className = 'swiper-slide';
-      slide.innerHTML = `
-        <div class="flip" id="card-${index}">
-          <div class="flip-inner">
-            <!-- Front -->
-            <div class="card front">
-              <div class="meta">
-                <span class="tag">${item.tag}</span>
-                <span class="time">${item.time}</span>
-              </div>
-              <div class="headline">${item.title}</div>
-              <div class="summary">${item.summary}</div>
-              <div class="cover">
-      ${item.cover ? `<img src="${item.cover}" alt="" loading="lazy">` : ""}
-    </div>
-              <div class="front-footer">
-                <button class="btn" onclick="toggleFlip(${index})">查看详情</button>
-              </div>
+const container = document.getElementById('slides');
+
+let swiper;              // 让 swiper 可重建
+let currentList = [...news];
+
+function initSwiper() {
+  if (swiper) swiper.destroy(true, true);
+  swiper = new Swiper('.swiper', {
+    effect: 'slide',
+    grabCursor: true,
+    centeredSlides: true,
+    slidesPerView: 'auto',
+    spaceBetween: 30,
+    pagination: { el: '.swiper-pagination', clickable: true },
+    navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+    breakpoints: { 320: { spaceBetween: 20 }, 768: { spaceBetween: 40 } }
+  });
+}
+
+function renderSlides(list) {
+  container.innerHTML = "";
+  list.forEach((item, index) => {
+    const slide = document.createElement('div');
+    slide.className = 'swiper-slide';
+    slide.innerHTML = `
+      <div class="flip" id="card-${index}">
+        <div class="flip-inner">
+          <div class="card front">
+            <div class="meta">
+              <span class="tag">${item.tag}</span>
+              <span class="time">${item.time}</span>
             </div>
-            <!-- Back -->
-            <div class="card back">
-              <h2>深度解析</h2>
-              <div class="detail">${item.detail}</div>
-              <div class="back-footer">
-                <button class="btn btn-secondary" onclick="toggleFlip(${index})">返回</button>
-                ${item.source !== '#' ? `<a href="${item.source}" target="_blank" class="link-btn">阅读原文</a>` : ''}
-              </div>
+            <div class="headline">${item.title}</div>
+            <div class="summary">${item.summary}</div>
+
+            <div class="cover">
+              ${item.cover ? `<img src="${item.cover}" alt="" loading="lazy">` : ""}
+            </div>
+
+            <div class="front-footer">
+              <button class="btn" onclick="toggleFlip(${index})">查看详情</button>
+            </div>
+          </div>
+
+          <div class="card back">
+            <h2>深度解析</h2>
+            <div class="detail">${item.detail}</div>
+            <div class="back-footer">
+              <button class="btn btn-secondary" onclick="toggleFlip(${index})">返回</button>
+              ${item.source !== '#' ? `<a href="${item.source}" target="_blank" class="link-btn">阅读原文</a>` : ''}
             </div>
           </div>
         </div>
-      `;
-      container.appendChild(slide);
-    });
+      </div>
+    `;
+    container.appendChild(slide);
+  });
 
-    const swiper = new Swiper('.swiper', {
-      effect: 'slide',
-      grabCursor: true,
-      centeredSlides: true,
-      slidesPerView: 'auto',
-      spaceBetween: 30,
-      pagination: {
-        el: '.swiper-pagination',
-        clickable: true,
-      },
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-      breakpoints: {
-        320: { spaceBetween: 20 },
-        768: { spaceBetween: 40 }
-      }
-    });
+  initSwiper();
+}
 
-    function toggleFlip(index) {
-      const card = document.getElementById(`card-${index}`);
-      card.classList.toggle('is-flipped');
-    }
+function renderTOC(list) {
+  const tocList = document.getElementById("tocList");
+  if (!tocList) return;
+
+  if (!list.length) {
+    tocList.innerHTML = `<div class="toc-empty">没有匹配结果</div>`;
+    return;
+  }
+
+  tocList.innerHTML = list.map((item, idx) => `
+    <div class="toc-item" data-idx="${idx}">
+      <span class="toc-tag">${item.tag}</span>
+      <span class="toc-text">${item.title}</span>
+    </div>
+  `).join("");
+
+  // 点击目录跳转到对应 slide
+  tocList.querySelectorAll(".toc-item").forEach(el => {
+    el.addEventListener("click", () => {
+      const i = Number(el.dataset.idx);
+      swiper.slideTo(i, 500);
+      closeTOC();
+    });
+  });
+}
+
+function normalizeText(s) {
+  return (s ?? "").toString().toLowerCase();
+}
+
+function applyFilter() {
+  const q = normalizeText(document.getElementById("searchInput")?.value).trim();
+  if (!q) {
+    currentList = [...news];
+  } else {
+    currentList = news.filter(item => {
+      const hay = [
+        item.tag, item.time, item.title, item.summary, item.detail
+      ].map(normalizeText).join(" ");
+      return hay.includes(q);
+    });
+  }
+  renderSlides(currentList);
+  renderTOC(currentList);
+}
+
+function toggleFlip(index) {
+  const card = document.getElementById(`card-${index}`);
+  if (card) card.classList.toggle('is-flipped');
+}
+
+/* 搜索框事件 */
+document.getElementById("searchInput")?.addEventListener("input", debounce(applyFilter, 120));
+document.getElementById("clearBtn")?.addEventListener("click", () => {
+  const input = document.getElementById("searchInput");
+  if (input) input.value = "";
+  applyFilter();
+});
+
+/* 目录开关 */
+const tocToggle = document.getElementById("tocToggle");
+const tocPanel = document.getElementById("tocPanel");
+function closeTOC(){ tocPanel?.classList.remove("open"); }
+tocToggle?.addEventListener("click", () => tocPanel?.classList.toggle("open"));
+document.addEventListener("click", (e) => {
+  if (!tocPanel || !tocToggle) return;
+  const target = e.target;
+  if (tocPanel.contains(target) || tocToggle.contains(target)) return;
+  closeTOC();
+});
+
+/* 简单防抖 */
+function debounce(fn, wait){
+  let t;
+  return (...args) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn(...args), wait);
+  };
+}
+
+/* 首次渲染 */
+renderSlides(currentList);
+renderTOC(currentList);
+ 
   </script>
 </body>
 </html>
+
 
 
 
