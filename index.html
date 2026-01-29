@@ -642,6 +642,67 @@ body.is-vertical .swiper-button-next{
       -webkit-box-orient: vertical;
 }
 
+          /* =========================
+         1) 右侧导航按钮：去文字 + 右侧悬浮
+         ========================= */
+      
+      /* ✅ 去掉按钮文字（你原来 nav-btn::after 用了 data-label） */
+      .nav-btn::after { content: ""; }
+      
+      /* ✅ 右侧悬浮：两个按钮竖排在右侧中间 */
+      @media (min-width: 769px) {
+        /* 给右侧按钮留“安全区”，不挡卡片 */
+        .swiper { padding-right: 92px; }
+      
+        /* 统一让 prev/next 都贴右侧 */
+        .swiper-button-prev,
+        .swiper-button-next{
+          left: auto !important;
+          right: 16px !important;
+          transform: none !important;
+        }
+      
+        /* 横向模式：两个按钮上下排在右侧中间 */
+        body:not(.is-vertical) .swiper-button-prev{
+          top: calc(50% - 34px) !important;
+        }
+        body:not(.is-vertical) .swiper-button-next{
+          top: calc(50% + 34px) !important;
+        }
+      
+        /* 竖向模式：也固定在右侧（更像阅读器） */
+        body.is-vertical .swiper-button-prev{
+          top: calc(50% - 34px) !important;
+        }
+        body.is-vertical .swiper-button-next{
+          top: calc(50% + 34px) !important;
+          bottom: auto !important;
+        }
+      }
+      
+      /* =========================
+         2) 横向模式：其它卡片虚焦
+         ========================= */
+      
+      /* 只在横向时生效 */
+      body:not(.is-vertical) .swiper-slide .flip{
+        transition: filter .25s ease, opacity .25s ease, transform .25s ease;
+      }
+      
+      /* 非当前卡片：虚焦 + 降低不透明度 + 轻微缩小 */
+      body:not(.is-vertical) .swiper-slide:not(.swiper-slide-active) .flip{
+        filter: blur(2.6px);
+        opacity: .45;
+        transform: scale(.965);
+      }
+      
+      /* 当前卡片：保持清晰 */
+      body:not(.is-vertical) .swiper-slide-active .flip{
+        filter: none;
+        opacity: 1;
+        transform: scale(1);
+      }
+
     
 
     @media (max-width: 768px) {
@@ -788,6 +849,12 @@ body.is-vertical .swiper-button-next{
         breakpoints: isVertical
           ? { 320: { spaceBetween: 16 }, 768: { spaceBetween: 20 } }
           : { 320: { spaceBetween: 20 }, 768: { spaceBetween: 40 } }
+
+        slideToClickedSlide: true,
+        watchSlidesProgress: true,
+
+
+        
       });
     }
 
@@ -932,4 +999,5 @@ body.is-vertical .swiper-button-next{
   </script>
 </body>
 </html>
+
 
