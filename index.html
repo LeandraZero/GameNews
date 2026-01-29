@@ -722,8 +722,8 @@ body.is-vertical .swiper-button-next{
       <div class="swiper-pagination"></div>
 
       <!-- ✅ 导航按钮换成 button + 文案 -->
-      <button class="nav-btn swiper-button-prev" type="button" aria-label="上" data-label="上"></button>
-      <button class="nav-btn swiper-button-next" type="button" aria-label="下" data-label="下"></button>
+      <button class="nav-btn swiper-button-prev" type="button" aria-label="上一条" data-label="上一条"></button>
+      <button class="nav-btn swiper-button-next" type="button" aria-label="下一条" data-label="下一条"></button>
     </div>
   </div>
 
@@ -795,8 +795,8 @@ body.is-vertical .swiper-button-next{
       const prevBtn = document.querySelector('.swiper-button-prev');
       const nextBtn = document.querySelector('.swiper-button-next');
       if (prevBtn && nextBtn) {
-        prevBtn.dataset.label = isVertical ? '上' : '上';
-        nextBtn.dataset.label = isVertical ? '下' : '下';
+        prevBtn.dataset.label = isVertical ? '上一条' : '上一条';
+        nextBtn.dataset.label = isVertical ? '下一条' : '下一条';
       }
     }
 
@@ -941,6 +941,18 @@ body.is-vertical .swiper-button-next{
       setDirectionUI();
       initSwiper();
       swiper.slideTo(0, 0);
+
+      function resetFlips(){
+      document.querySelectorAll('.flip.is-flipped')
+        .forEach(el => el.classList.remove('is-flipped'));
+          }
+      
+      resetFlips();
+      setDirectionUI();
+      initSwiper();
+      swiper.slideTo(0, 0);
+      
+            
     });
 
     /* 目录开关 */
@@ -970,6 +982,7 @@ body.is-vertical .swiper-button-next{
   </script>
 </body>
 </html>
+
 
 
 
