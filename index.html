@@ -410,42 +410,48 @@
     }
 
 
-    /* 关掉你之前可能写的文字箭头 ::before */
-    .swiper-button-prev.nav-btn::before,
-    .swiper-button-next.nav-btn::before{
-      content: "" !important;
-    }
+   /* ✅ 干掉 Swiper 默认箭头 */
+.swiper-button-prev::after,
+.swiper-button-next::after{
+  display:none !important;
+  content:"" !important;
+}
 
-    /* 关掉 Swiper 默认 ::after（保险） */
-    .swiper-button-prev::after,
-    .swiper-button-next::after{
-      content: "" !important;
-    }
+/* ✅ 用 nav-btn 的 ::before 画 chevron（粗线条），缩小 70% */
+.swiper-button-prev.nav-btn::before,
+.swiper-button-next.nav-btn::before{
+  content:"";
+  width: 18px;
+  height: 18px;
+  border-right: 4px solid currentColor;
+  border-bottom: 4px solid currentColor;
+  display:block;
+  transform-origin:center;
+}
 
-    /* 用 nav-btn 自己的 ::after 画 chevron */
-    .swiper-button-prev.nav-btn::after,
-    .swiper-button-next.nav-btn::after{
-      content:"";
-      width: 18px;
-      height: 18px;
-      border-right: 4px solid currentColor;
-      border-bottom: 4px solid currentColor;
-      display:block;
+.swiper-button-prev.nav-btn::before{
+  transform: scale(0.7) rotate(135deg);
+}
 
-      /* ✅ 缩小到 70% */
-      transform: scale(0.7);
-      transform-origin: center;
-    }
+.swiper-button-next.nav-btn::before{
+  transform: scale(0.7) rotate(-45deg);
+}
 
-    /* 左：<  */
-    .swiper-button-prev.nav-btn::after{
-      transform: scale(0.7) rotate(135deg);
-    }
+/* ✅ 确保 ::after 不再画任何东西（你之前画在 ::after 的话也直接灭掉） */
+.swiper-button-prev.nav-btn::after,
+.swiper-button-next.nav-btn::after{
+  display:none !important;
+  content:none !important;
 
-    /* 右：> */
-    .swiper-button-next.nav-btn::after{
-      transform: scale(0.7) rotate(-45deg);
-    }
+/* 极限兜底：把 Swiper 自带 icon 字体也废掉 */
+.swiper .swiper-button-prev,
+.swiper .swiper-button-next{
+  font-size: 0 !important;
+}
+
+
+}
+
   </style>
 </head>
 
