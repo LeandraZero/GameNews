@@ -339,9 +339,7 @@
     body.is-vertical .swiper-pagination-bullet{ margin:0 !important; }
 
     /* =========================
-       右侧悬浮导航按钮（仅箭头）
-       - 横向显示
-       - 竖向隐藏（你要求的）
+       右侧悬浮导航按钮
        ========================= */
     .nav-btn{
       position:absolute;
@@ -371,25 +369,9 @@
       outline-offset:3px;
     }
 
-    /* 清掉 Swiper 可能注入的默认箭头（保险） */
-    .swiper-button-prev::after,
-    .swiper-button-next::after{ content:"" !important; }
-
-    /* 默认（横向）：prev=← next=→ */
-    .swiper-button-prev.nav-btn::before{
-      content:"←";
-      font-weight:900;
-      font-size:16px;
-      line-height:1;
-      opacity:.95;
-    }
-    .swiper-button-next.nav-btn::before{
-      content:"→";
-      font-weight:900;
-      font-size:16px;
-      line-height:1;
-      opacity:.95;
-    }
+    /* ✅ 竖向模式隐藏按钮 */
+    body.is-vertical .nav-btn{ display:none !important; }
+    body.is-vertical .swiper{ padding-right: 0; }
 
     /* 桌面端：按钮贴右侧，竖排居中（横向模式用） */
     @media (min-width: 769px) {
@@ -403,11 +385,6 @@
       .swiper-button-prev{ top: calc(50% - 34px) !important; }
       .swiper-button-next{ top: calc(50% + 34px) !important; }
     }
-
-    /* ✅ 关键：竖向模式隐藏按钮（你要的） */
-    body.is-vertical .nav-btn{ display:none !important; }
-    /* 竖向时也不用给右侧留安全区 */
-    body.is-vertical .swiper{ padding-right: 0; }
 
     /* 横向模式：非当前卡片虚焦 */
     body:not(.is-vertical) .swiper-slide .flip{
@@ -424,12 +401,55 @@
       transform: scale(1);
     }
 
-    /* 移动端：本来就隐藏导航按钮 */
+    /* 移动端：隐藏导航按钮 */
     @media (max-width: 768px) {
       header { padding: 30px 20px 10px; }
       .title { font-size: 24px; }
       .nav-btn { display: none; }
       .front { padding: 24px; }
+    }
+
+    /* =========================
+       ✅ Chevron 大方向键（缩小 70%）
+       - 不用 ← →
+       - 用粗线条 < >
+       ========================= */
+
+    /* 关掉你之前可能写的文字箭头 ::before */
+    .swiper-button-prev.nav-btn::before,
+    .swiper-button-next.nav-btn::before{
+      content: "" !important;
+    }
+
+    /* 关掉 Swiper 默认 ::after（保险） */
+    .swiper-button-prev::after,
+    .swiper-button-next::after{
+      content: "" !important;
+    }
+
+    /* 用 nav-btn 自己的 ::after 画 chevron */
+    .swiper-button-prev.nav-btn::after,
+    .swiper-button-next.nav-btn::after{
+      content:"";
+      width: 18px;
+      height: 18px;
+      border-right: 4px solid currentColor;
+      border-bottom: 4px solid currentColor;
+      display:block;
+
+      /* ✅ 缩小到 70% */
+      transform: scale(0.7);
+      transform-origin: center;
+    }
+
+    /* 左：<  */
+    .swiper-button-prev.nav-btn::after{
+      transform: scale(0.7) rotate(135deg);
+    }
+
+    /* 右：> */
+    .swiper-button-next.nav-btn::after{
+      transform: scale(0.7) rotate(-45deg);
     }
   </style>
 </head>
@@ -478,117 +498,113 @@
 
   <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
   <script>
-    
-const news = [
-  {
-    tag: "竞品宣发",
-    time: "2026-01",
-    title: "《明日方舟：终末地》全球公测：四年节奏管理+全球投放拉高声量，但首日PayPal事故放大负面舆情",
-    summary:
-      "鹰角用近四年的宣发节奏（概念PV→多轮测试→国际展会节点→Apple Event→公测前瞻/预下载→1月22日全球公测）叠加大陆与海外线上线下投放，提前建立全球认知基础与首发声量；但公测首日PayPal被盗刷/异常扣款争议集中爆发，官方禁用PayPal并审查交易、对受影响订单全额退款，负面舆情被高期待放大。",
-    detail: `当产品期待和影响力被拉高时，任何基础设施层面的失误都会被成倍放大。未来新游进入全球同步发行阶段，支付与账户安全等“非内容模块”需要被视为首发体验的一部分，甚至应优先于商业化规模扩张进行验证，避免在声量最高的窗口期消耗用户信任。`,
-    source: "#（你这段里未给出链接，可后补）",
-    cover: "images/endfield.png",
-  },
+    const reports = [
+      {
+        tag: "竞品宣发",
+        time: "2026-01",
+        title: "《明日方舟：终末地》全球公测：四年节奏管理+全球投放拉高声量，但首日PayPal事故放大负面舆情",
+        summary:
+          "鹰角用近四年的宣发节奏（概念PV→多轮测试→国际展会节点→Apple Event→公测前瞻/预下载→1月22日全球公测）叠加大陆与海外线上线下投放，提前建立全球认知基础与首发声量；但公测首日PayPal被盗刷/异常扣款争议集中爆发，官方禁用PayPal并审查交易、对受影响订单全额退款，负面舆情被高期待放大。",
+        detail: `当产品期待和影响力被拉高时，任何基础设施层面的失误都会被成倍放大。未来新游进入全球同步发行阶段，支付与账户安全等“非内容模块”需要被视为首发体验的一部分，甚至应优先于商业化规模扩张进行验证，避免在声量最高的窗口期消耗用户信任。`,
+        source: "#（你这段里未给出链接，可后补）",
+        cover: "images/endfield.png",
+      },
 
-  {
-    tag: "行业信息",
-    time: "2026-01",
-    title: "ST报告：生成式AI成为移动生态关键增长动力，非游戏应用收入首次超过游戏应用收入",
-    summary:
-      "ST报告指出：2025年生成式AI逐渐成为移动设备生态的关键组成部分；非游戏应用的收入首次超过游戏应用收入，主要由ChatGPT、社交媒体、视频流媒体与生产力工具等带动；移动游戏需要与更多App争夺用户时间。",
-    detail: `注意力经济横跨多个领域：如今，游戏需要与社交媒体、短剧和人工智能应用争夺用户时间。吸引用户注意力是实现盈利、提高用户留存率和实现长期增长的最有效途径。`,
-    source: "#https://sensortower.com/report/state-of-mobile-2026/download",
-    cover: "",
-  },
+      {
+        tag: "行业信息",
+        time: "2026-01",
+        title: "ST报告：生成式AI成为移动生态关键增长动力，非游戏应用收入首次超过游戏应用收入",
+        summary:
+          "ST报告指出：2025年生成式AI逐渐成为移动设备生态的关键组成部分；非游戏应用的收入首次超过游戏应用收入，主要由ChatGPT、社交媒体、视频流媒体与生产力工具等带动；移动游戏需要与更多App争夺用户时间。",
+        detail: `注意力经济横跨多个领域：如今，游戏需要与社交媒体、短剧和人工智能应用争夺用户时间。吸引用户注意力是实现盈利、提高用户留存率和实现长期增长的最有效途径。`,
+        source: "#https://sensortower.com/report/state-of-mobile-2026/download",
+        cover: "",
+      },
 
-  {
-    tag: "行业信息",
-    time: "2026-01",
-    title: "法国推动立法：禁止15岁以下未成年人使用社交媒体平台，最快下一个学年实施",
-    summary:
-      "2026年1月，法国国民议会通过法案方向，拟禁止15岁以下未成年人使用社交媒体平台，并推动加速立法，最快将于下一个学年正式实施。预计会对未来未成年人宣发造成阻力；这是继澳大利亚之后第二个采取此类措施的国家，同时巴西等国也在同步推进类似立法。",
-    detail: `未成年人相关的监管正在加速外溢到更多国家。对宣发而言，影响不是“某一条政策”，而是长期趋势：面向未成年人的触达和表达空间会越来越窄，需要提前预案“投放/内容/渠道”在不同市场的合规边界。`,
-    source: "#（你这段里未给出链接，可后补）",
-    cover: "images/France15.png",
-  },
+      {
+        tag: "行业信息",
+        time: "2026-01",
+        title: "法国推动立法：禁止15岁以下未成年人使用社交媒体平台，最快下一个学年实施",
+        summary:
+          "2026年1月，法国国民议会通过法案方向，拟禁止15岁以下未成年人使用社交媒体平台，并推动加速立法，最快将于下一个学年正式实施。预计会对未来未成年人宣发造成阻力；这是继澳大利亚之后第二个采取此类措施的国家，同时巴西等国也在同步推进类似立法。",
+        detail: `未成年人相关的监管正在加速外溢到更多国家。对宣发而言，影响不是“某一条政策”，而是长期趋势：面向未成年人的触达和表达空间会越来越窄，需要提前预案“投放/内容/渠道”在不同市场的合规边界。`,
+        source: "#（你这段里未给出链接，可后补）",
+        cover: "images/France15.png",
+      },
 
-  {
-    tag: "行业信息",
-    time: "2026-01",
-    title: "2026年首批游戏版号发布：进口版号含腾讯《彩虹六号：攻势》、金山世游《愤怒的小鸟》系列等",
-    summary:
-      "2026年首批版号公布，进口版号包括腾讯《彩虹六号：攻势》、金山世游《愤怒的小鸟：经典归来》《愤怒的小鸟：梦幻爆破》等过审；从近一年每月版号下发数量来看，国产版号获批数量呈间断性增长，本月177个为近一年次高。",
-    detail: `版号节奏仍是影响产品排期与宣发节点的关键变量，尤其在“窗口期竞争”更激烈的年份，越需要把内容节奏与宣发节点做成可伸缩模块，避免被动重排造成资源浪费。`,
-    source:
-      "#https://www.nppa.gov.cn/bsfw/jggs/yxspjg/gcwlyxspxx/202601/t20260126_947903.html",
-    cover: "images/2026game.png",
-  },
+      {
+        tag: "行业信息",
+        time: "2026-01",
+        title: "2026年首批游戏版号发布：进口版号含腾讯《彩虹六号：攻势》、金山世游《愤怒的小鸟》系列等",
+        summary:
+          "2026年首批版号公布，进口版号包括腾讯《彩虹六号：攻势》、金山世游《愤怒的小鸟：经典归来》《愤怒的小鸟：梦幻爆破》等过审；从近一年每月版号下发数量来看，国产版号获批数量呈间断性增长，本月177个为近一年次高。",
+        detail: `版号节奏仍是影响产品排期与宣发节点的关键变量，尤其在“窗口期竞争”更激烈的年份，越需要把内容节奏与宣发节点做成可伸缩模块，避免被动重排造成资源浪费。`,
+        source: "#https://www.nppa.gov.cn/bsfw/jggs/yxspjg/gcwlyxspxx/202601/t20260126_947903.html",
+        cover: "images/2026game.png",
+      },
 
-  {
-    tag: "UGC相关",
-    time: "2026-01",
-    title: "Bruno Mars在《Roblox》UGC游戏Steal a Brainrot中的虚拟演出，最高吸引1280万同时在线用户",
-    summary:
-      "该演出在14个国家同步直播，直播观看人数约1000万；活动期间共发放542万件定制brainrot收藏品，并在社交平台上累计产生5300万次视频观看。",
-    detail: `虚拟演出对 Roblox 和 Fortnite 这种产品的价值是同时在做拉新召回、破圈和商业化。它的超高同时在线用户人数也可以证明平台服务器可以支持大规模同步事件；演出内容又会被用户录屏二创扩散到各个社交平台，破圈传播；同时通过皮肤、道具、收藏品和品牌合作，把热度直接转成收入。`,
-    source:
-      "#https://www.musicbusinessworldwide.com/bruno-mars-pulls-record-12-8m-concurrent-users-to-roblox-concert/",
-    cover: "images/mars.png",
-  },
+      {
+        tag: "UGC相关",
+        time: "2026-01",
+        title: "Bruno Mars在《Roblox》UGC游戏Steal a Brainrot中的虚拟演出，最高吸引1280万同时在线用户",
+        summary:
+          "该演出在14个国家同步直播，直播观看人数约1000万；活动期间共发放542万件定制brainrot收藏品，并在社交平台上累计产生5300万次视频观看。",
+        detail: `虚拟演出对 Roblox 和 Fortnite 这种产品的价值是同时在做拉新召回、破圈和商业化。它的超高同时在线用户人数也可以证明平台服务器可以支持大规模同步事件；演出内容又会被用户录屏二创扩散到各个社交平台，破圈传播；同时通过皮肤、道具、收藏品和品牌合作，把热度直接转成收入。`,
+        source: "#https://www.musicbusinessworldwide.com/bruno-mars-pulls-record-12-8m-concurrent-users-to-roblox-concert/",
+        cover: "images/mars.png",
+      },
 
-  {
-    tag: "UGC相关",
-    time: "2026-01",
-    title: "Fortnite开放第三方创作者内购后，《Steal the Brainrot》上线高价礼包与类赌博转盘引争议，Epic紧急收紧规则",
-    summary:
-      "Fortnite在2026年初正式开放第三方创作者内购后，头部UGC项目《Steal the Brainrot》迅速上线高价礼包（约45美元）与类赌博转盘机制，引发强烈不满；争议点包括上线不足24小时即引入高价随机礼包与概率转盘、以及“虚假折扣”等合规灰区。随后Epic紧急收紧规则，禁止付费影响抽奖结果。",
-    detail: `无论是否引入创作者变现，在保证共创/UGC生态健康可循环的同时，也需要为规则快速迭代预留空间，避免生态在早期因激进或不合规设计透支品牌信用。`,
-    source: "#（你这段里未给出链接，可后补）",
-    cover: "images/fornite.png",
-  },
+      {
+        tag: "UGC相关",
+        time: "2026-01",
+        title: "Fortnite开放第三方创作者内购后，《Steal the Brainrot》上线高价礼包与类赌博转盘引争议，Epic紧急收紧规则",
+        summary:
+          "Fortnite在2026年初正式开放第三方创作者内购后，头部UGC项目《Steal the Brainrot》迅速上线高价礼包（约45美元）与类赌博转盘机制，引发强烈不满；争议点包括上线不足24小时即引入高价随机礼包与概率转盘、以及“虚假折扣”等合规灰区。随后Epic紧急收紧规则，禁止付费影响抽奖结果。",
+        detail: `无论是否引入创作者变现，在保证共创/UGC生态健康可循环的同时，也需要为规则快速迭代预留空间，避免生态在早期因激进或不合规设计透支品牌信用。`,
+        source: "#（你这段里未给出链接，可后补）",
+        cover: "images/fornite.png",
+      },
 
-  {
-    tag: "UGC相关",
-    time: "2026-01",
-    title: "Rockstar推出官方MOD市场Cfx Marketplace：基于FiveM/RedM构建，可能预示GTA未来UGC进一步官方化",
-    summary:
-      "Rockstar近日推出官方MOD市场Cfx Marketplace，基于两大非官方平台FiveM和RedM构建；平台以“官方策展式数字商店”形态允许创作者分发并定价出售脚本、地图、道具等内容（部分免费、部分付费，价格可达数百美元），并为服务器管理员与玩家提供统一、安全的获取渠道；目前仍处于分阶段上线，首批创作者多为Rockstar参与共建的合作方。",
-    detail: `如果UGC开始被官方“市场化+策展化”，它就不再只是内容生态，而会变成平台能力的一部分：统一分发、统一安全、统一交易。对平台型产品来说，这类基础设施的搭建，可能比单次爆款内容更能决定生态上限。`,
-    source: "#（你这段里未给出链接，可后补）",
-    cover: "images/cfx.png",
-  },
+      {
+        tag: "UGC相关",
+        time: "2026-01",
+        title: "Rockstar推出官方MOD市场Cfx Marketplace：基于FiveM/RedM构建，可能预示GTA未来UGC进一步官方化",
+        summary:
+          "Rockstar近日推出官方MOD市场Cfx Marketplace，基于两大非官方平台FiveM和RedM构建；平台以“官方策展式数字商店”形态允许创作者分发并定价出售脚本、地图、道具等内容（部分免费、部分付费，价格可达数百美元），并为服务器管理员与玩家提供统一、安全的获取渠道；目前仍处于分阶段上线，首批创作者多为Rockstar参与共建的合作方。",
+        detail: `如果UGC开始被官方“市场化+策展化”，它就不再只是内容生态，而会变成平台能力的一部分：统一分发、统一安全、统一交易。对平台型产品来说，这类基础设施的搭建，可能比单次爆款内容更能决定生态上限。`,
+        source: "#（你这段里未给出链接，可后补）",
+        cover: "images/cfx.png",
+      },
 
-  {
-    tag: "产品相关",
-    time: "2026-01",
-    title: "《Fable》确认2026年秋季登陆Xbox/PC/PS5：提出“Living Population”，强调非AI、全手工制作",
-    summary:
-      "1月22日Xbox Developer Direct上，Playground Games披露重启版《Fable》（非原先三部曲续作），确认2026年秋季登陆Xbox、PC及PS5。设计上强调“没有借用AI全靠手搓”，提出“Living Population”概念：超过1000名NPC拥有独立身份、作息与价值观，并会记住玩家行为形成不同评价；多平台同步发行也延续微软近年的去独占策略。",
-    detail: `“Living Population”这种卖点的价值在于：它把长期体验的差异化写进系统里，而不是只靠叙事/包装。再叠加多平台同步发行，平台被弱化、内容被强化，最终拼的就是“游戏本身能不能提供持续被讨论与被记住的体验”。`,
-    source: "#（你这段里未给出链接，可后补）",
-    cover: "images/fable.png",
-  },
+      {
+        tag: "产品相关",
+        time: "2026-01",
+        title: "《Fable》确认2026年秋季登陆Xbox/PC/PS5：提出“Living Population”，强调非AI、全手工制作",
+        summary:
+          "1月22日Xbox Developer Direct上，Playground Games披露重启版《Fable》（非原先三部曲续作），确认2026年秋季登陆Xbox、PC及PS5。设计上强调“没有借用AI全靠手搓”，提出“Living Population”概念：超过1000名NPC拥有独立身份、作息与价值观，并会记住玩家行为形成不同评价；多平台同步发行也延续微软近年的去独占策略。",
+        detail: `“Living Population”这种卖点的价值在于：它把长期体验的差异化写进系统里，而不是只靠叙事/包装。再叠加多平台同步发行，平台被弱化、内容被强化，最终拼的就是“游戏本身能不能提供持续被讨论与被记住的体验”。`,
+        source: "#（你这段里未给出链接，可后补）",
+        cover: "images/fable.png",
+      },
 
-  {
-    tag: "产品相关",
-    time: "2026-01",
-    title: "《无尽冬日》联动「影视飓风」：零下30℃、100小时雪地生存直播，把核心玩法映射到现实",
-    summary:
-      "《无尽冬日》与头部内容团队「影视飓风」联动，通过零下30℃、100小时不间断雪地生存直播引发超5万人在线观看。直播以“无物资开局 + AI画图换物资”的规则展开，对应游戏中“开局点火炉，步步攒资源”的核心玩法；不同于常规代言，这次把游戏系统拆解成可被创作者直接运用的挑战规则，形成破圈传播与玩法教学。",
-    detail: `宣发不只是短视频种草或明星代言：把玩法映射到现实的真人直播能建立真实感、可信度，也有破圈潜力。对品牌方是一次放大的“玩法教学+IP叙事”，对创作者是可持续的内容规则，天然更容易双赢。`,
-    source: "#（你这段里未给出链接，可后补）",
-    cover: "images/tim.png",
-  },
-];
-
+      {
+        tag: "产品相关",
+        time: "2026-01",
+        title: "《无尽冬日》联动「影视飓风」：零下30℃、100小时雪地生存直播，把核心玩法映射到现实",
+        summary:
+          "《无尽冬日》与头部内容团队「影视飓风」联动，通过零下30℃、100小时不间断雪地生存直播引发超5万人在线观看。直播以“无物资开局 + AI画图换物资”的规则展开，对应游戏中“开局点火炉，步步攒资源”的核心玩法；不同于常规代言，这次把游戏系统拆解成可被创作者直接运用的挑战规则，形成破圈传播与玩法教学。",
+        detail: `宣发不只是短视频种草或明星代言：把玩法映射到现实的真人直播能建立真实感、可信度，也有破圈潜力。对品牌方是一次放大的“玩法教学+IP叙事”，对创作者是可持续的内容规则，天然更容易双赢。`,
+        source: "#（你这段里未给出链接，可后补）",
+        cover: "images/tim.png",
+      },
+    ];
 
     const container = document.getElementById('slides');
     const hintText = document.getElementById('hintText');
     const dirToggle = document.getElementById('dirToggle');
 
     let swiper;
-    let currentList = [...news];
+    let currentList = [...reports];
     let isVertical = false;
 
     function setDirectionUI() {
@@ -603,6 +619,16 @@ const news = [
         .forEach(el => el.classList.remove('is-flipped'));
     }
 
+    function normalizeSource(s){
+      if(!s) return "";
+      // 兼容你写的 "#https://xxx"（否则会变成锚点链接）
+      if (s.startsWith("#http")) return s.slice(1);
+      if (s === "#") return "";
+      // 你写 "#（未给出链接）" 这种也当作无链接
+      if (s.startsWith("#（")) return "";
+      return s;
+    }
+
     function initSwiper() {
       if (swiper) swiper.destroy(true, true);
 
@@ -614,19 +640,16 @@ const news = [
         slidesPerView: isVertical ? 1 : 'auto',
         spaceBetween: isVertical ? 20 : 30,
 
-        // 竖向时开鼠标滚轮更舒服；横向不抢滚轮
         mousewheel: isVertical ? { forceToAxis: true, releaseOnEdges: true } : false,
-
         pagination: { el: '.swiper-pagination', clickable: true },
 
-        // ✅ 关键：竖向不启用导航（避免按钮/点击行为）
         navigation: isVertical
           ? false
           : { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
 
         breakpoints: isVertical
           ? { 320: { spaceBetween: 16 }, 768: { spaceBetween: 20 } }
-          : { 320: { spaceBetween: 20 }, 768: { spaceBetween: 40 } }, // ✅ 必须有逗号
+          : { 320: { spaceBetween: 20 }, 768: { spaceBetween: 40 } },
 
         slideToClickedSlide: true,
         watchSlidesProgress: true,
@@ -642,6 +665,10 @@ const news = [
       list.forEach((item, index) => {
         const slide = document.createElement('div');
         slide.className = 'swiper-slide';
+
+        const sourceUrl = normalizeSource(item.source);
+        const hasSource = !!sourceUrl;
+
         slide.innerHTML = `
           <div class="flip" id="card-${index}">
             <div class="flip-inner">
@@ -667,7 +694,7 @@ const news = [
                 <div class="detail">${item.detail}</div>
                 <div class="back-footer">
                   <button class="btn btn-secondary" onclick="toggleFlip(${index})">返回</button>
-                  ${item.source !== '#' ? `<a href="${item.source}" target="_blank" class="link-btn">阅读原文</a>` : ''}
+                  ${hasSource ? `<a href="${sourceUrl}" target="_blank" rel="noopener" class="link-btn">阅读原文</a>` : ''}
                 </div>
               </div>
             </div>
@@ -716,9 +743,9 @@ const news = [
     function applyFilter() {
       const q = normalizeText(document.getElementById("searchInput")?.value).trim();
       if (!q) {
-        currentList = [...news];
+        currentList = [...reports];
       } else {
-        currentList = news.filter(item => {
+        currentList = reports.filter(item => {
           const hay = [item.tag, item.time, item.title, item.summary, item.detail]
             .map(normalizeText).join(" ");
           return hay.includes(q);
@@ -779,5 +806,3 @@ const news = [
   </script>
 </body>
 </html>
-
-
