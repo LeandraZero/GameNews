@@ -23,15 +23,15 @@
       --radius: 28px;
     }
 
-    * { 
-      box-sizing: border-box; 
+    * {
+      box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
     }
 
     body {
       margin: 0;
       background-color: var(--bg);
-      background-image: 
+      background-image:
         radial-gradient(circle at 10% 20%, rgba(79, 110, 247, 0.15) 0%, transparent 40%),
         radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 40%);
       color: var(--text-primary);
@@ -50,46 +50,74 @@
       text-align: center;
     }
 
-    .toolbar{
-  margin-top: 18px;
-  display:flex;
-  justify-content:center;
-  gap:12px;
-  flex-wrap:wrap;
-}
+    .title {
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      background: linear-gradient(to right, #fff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
 
-    .search{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      width:min(720px, 92vw);
-      padding:10px 12px;
+    .hint {
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+      opacity: 0.8;
+    }
+
+    /* ✅ toolbar 改成两行：搜索一行，目录&开关一行 */
+    .toolbar {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .toolbar-row {
+      width: min(820px, 92vw);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 10px 12px;
       border-radius: 16px;
       background: rgba(255,255,255,.04);
       border: 1px solid var(--glass-border);
       backdrop-filter: blur(10px);
     }
-    
-    .search input{
-      flex:1;
+
+    .search input {
+      flex: 1;
       background: transparent;
       border: none;
       outline: none;
       color: var(--text-primary);
       font-size: 14px;
     }
-    .search input::placeholder{ color: rgba(148,163,184,.85); }
-    
-    .clear-btn{
+    .search input::placeholder { color: rgba(148,163,184,.85); }
+
+    .clear-btn {
       background: rgba(255,255,255,.06);
       color: var(--text-primary);
       border: 1px solid var(--glass-border);
-      padding:8px 12px;
+      padding: 8px 12px;
       border-radius: 12px;
-      cursor:pointer;
+      cursor: pointer;
+      white-space: nowrap;
     }
-    
-    .toc-wrap{ position: relative; }
+
+    .toc-wrap { position: relative; }
     .toc-btn{
       height: 44px;
       padding: 0 14px;
@@ -98,8 +126,9 @@
       color: var(--text-primary);
       border: 1px solid var(--glass-border);
       cursor:pointer;
+      white-space: nowrap;
     }
-    
+
     .toc-panel{
       position:absolute;
       right:0;
@@ -114,15 +143,16 @@
       box-shadow: var(--shadow-lg);
       display:none;
       z-index: 50;
+      text-align: left;
     }
     .toc-panel.open{ display:block; }
-    
+
     .toc-title{
       font-weight: 800;
       color: #a5b4fc;
       margin-bottom: 10px;
     }
-    
+
     .toc-item{
       padding: 10px 10px;
       border-radius: 14px;
@@ -151,22 +181,53 @@
       padding: 8px 4px;
     }
 
-
-    .title {
-      font-size: 28px;
-      font-weight: 900;
-      letter-spacing: -0.5px;
-      background: linear-gradient(to right, #fff, #94a3b8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 8px;
+    /* ✅ 竖向滑动开关 */
+    .switch {
+      height: 44px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--glass-border);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
     }
-
-    .hint {
-      color: var(--text-secondary);
-      font-size: 14px;
-      font-weight: 400;
-      opacity: 0.8;
+    .switch input { display: none; }
+    .switch .dot {
+      width: 34px;
+      height: 20px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.10);
+      position: relative;
+      border: 1px solid rgba(255,255,255,.10);
+    }
+    .switch .dot::after{
+      content:"";
+      position:absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      top: 50%;
+      left: 3px;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,.85);
+      transition: all .2s ease;
+    }
+    .switch input:checked + .dot{
+      background: rgba(79,110,247,.25);
+      border-color: rgba(79,110,247,.35);
+    }
+    .switch input:checked + .dot::after{
+      left: 17px;
+      background: #a5b4fc;
+    }
+    .switch span{
+      font-size: 13px;
+      color: #eaf0ff;
+      opacity: .92;
     }
 
     .wrap {
@@ -182,7 +243,14 @@
     .swiper {
       width: 100%;
       padding: 20px 0 60px;
-      overflow: visible !important; /* Allow shadows to show */
+      overflow: visible !important;
+      position: relative;
+    }
+
+    /* ✅ 竖向模式需要一个明确高度，否则鼠标滚轮&触控体验不好 */
+    body.is-vertical .swiper{
+      height: min(780px, 76vh);
+      padding: 20px 0;
     }
 
     .swiper-slide {
@@ -192,11 +260,14 @@
       transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
 
-    /* Card Flip Container */
     .flip {
       width: min(90vw, 420px);
       height: min(70vh, 600px);
       perspective: 2000px;
+    }
+
+    body.is-vertical .flip{
+      height: min(74vh, 640px);
     }
 
     .flip-inner {
@@ -206,10 +277,7 @@
       transform-style: preserve-3d;
       transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
     }
-
-    .flip.is-flipped .flip-inner {
-      transform: rotateY(180deg);
-    }
+    .flip.is-flipped .flip-inner { transform: rotateY(180deg); }
 
     .card {
       position: absolute;
@@ -226,12 +294,11 @@
       flex-direction: column;
     }
 
-    /* Front Side */
     .front{
-  position: relative;     /* 给绝对定位一个参照 */
-  padding: 32px;
-  padding-bottom: 96px;   /* 预留按钮区域，避免挡住封面 */
-}
+      position: relative;
+      padding: 32px;
+      padding-bottom: 96px;
+    }
 
     .meta {
       display: flex;
@@ -277,21 +344,24 @@
       overflow: hidden;
     }
 
-        /* 让封面图完整显示（不裁切） */
     .cover{
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #0f172a;            /* 防止留白太突兀 */
+      background: #0f172a;
+      position: relative;
+      border-radius: 18px;
+      overflow: hidden;
+      flex: 1;
+      min-height: 200px;
     }
-    
+
     .cover img{
       width: 100%;
       height: 100%;
-      object-fit: contain;            /* 关键：完整显示 */
+      object-fit: contain;
       object-position: center;
     }
-
 
     .cover::after{
       content:"";
@@ -302,15 +372,12 @@
     }
 
     .front-footer{
-    position: absolute;
-    left: 24px;
-    bottom: 24px;
-    margin-top: 0;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 12px;
-  }
+      position: absolute;
+      left: 24px;
+      bottom: 24px;
+      display: flex;
+      gap: 12px;
+    }
 
     .btn {
       background: var(--text-primary);
@@ -336,7 +403,6 @@
       border: 1px solid var(--glass-border);
     }
 
-    /* Back Side */
     .back {
       transform: rotateY(180deg);
       padding: 32px;
@@ -381,7 +447,6 @@
       font-size: 14px;
     }
 
-    /* Swiper Customization */
     .swiper-pagination-bullet {
       background: var(--text-secondary);
       opacity: 0.2;
@@ -397,19 +462,63 @@
       border-radius: 5px;
     }
 
-    .nav-btn {
-      width: 50px;
-      height: 50px;
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(10px);
+    /* ✅ 新的导航按钮（电脑端显示，移动端隐藏） */
+    .nav-btn{
+      position: absolute;
+      z-index: 20;
+      width: auto;
+      height: 44px;
+      padding: 0 14px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--glass-border);
-      border-radius: 50%;
-      color: white;
-      transition: all 0.3s ease;
+      backdrop-filter: blur(12px);
+      color: #eaf0ff;
+      cursor: pointer;
+      transition: all .25s ease;
+      user-select: none;
+    }
+    .nav-btn:hover{
+      background: rgba(255, 255, 255, 0.10);
+      border-color: rgba(79,110,247,.35);
+      color: #a5b4fc;
+      transform: translateY(-1px);
+    }
+    .nav-btn::before{
+      content: "←";
+      font-weight: 900;
+      opacity: .95;
+    }
+    .nav-btn::after{
+      content: attr(data-label);
+      font-size: 13px;
+      font-weight: 700;
+      opacity: .92;
     }
 
-    .nav-btn:after { font-size: 18px; font-weight: 900; }
-    .nav-btn:hover { background: rgba(255, 255, 255, 0.1); border-color: var(--accent); color: var(--accent); }
+    /* 横向：左右居中 */
+    .swiper-button-prev{ left: 10px; top: 50%; transform: translateY(-50%); }
+    .swiper-button-next{ right: 10px; top: 50%; transform: translateY(-50%); }
+    .swiper-button-next::before{ content:"→"; }
+
+    /* 竖向：上下居中（按钮变成 ↑/↓，位置变 top/bottom 中心） */
+    body.is-vertical .swiper-button-prev{
+      left: 50%;
+      top: 10px;
+      transform: translateX(-50%);
+    }
+    body.is-vertical .swiper-button-next{
+      left: 50%;
+      right: auto;
+      top: auto;
+      bottom: 10px;
+      transform: translateX(-50%);
+    }
+    body.is-vertical .swiper-button-prev::before{ content:"↑"; }
+    body.is-vertical .swiper-button-next::before{ content:"↓"; }
 
     @media (max-width: 768px) {
       header { padding: 30px 20px 10px; }
@@ -422,31 +531,43 @@
 <body>
   <header>
     <div class="title">精选游戏资讯</div>
-    <div class="hint">左右滑动切换卡片 · 点击查看更多内容</div>
-  
+    <div class="hint" id="hintText">左右滑动切换卡片 · 点击查看更多内容</div>
+
+    <!-- ✅ 两行布局 -->
     <div class="toolbar">
-      <div class="search">
-        <input id="searchInput" type="search" placeholder="搜索标题 / 标签 / 关键词…" />
-        <button id="clearBtn" class="clear-btn" type="button">清空</button>
-      </div>
-  
-      <div class="toc-wrap">
-        <button id="tocToggle" class="toc-btn" type="button">目录</button>
-        <div id="tocPanel" class="toc-panel">
-          <div class="toc-title">目录</div>
-          <div id="tocList" class="toc-list"></div>
+      <div class="toolbar-row">
+        <div class="search">
+          <input id="searchInput" type="search" placeholder="搜索标题 / 标签 / 关键词…" />
+          <button id="clearBtn" class="clear-btn" type="button">清空</button>
         </div>
+      </div>
+
+      <div class="toolbar-row">
+        <div class="toc-wrap">
+          <button id="tocToggle" class="toc-btn" type="button">目录</button>
+          <div id="tocPanel" class="toc-panel">
+            <div class="toc-title">目录</div>
+            <div id="tocList" class="toc-list"></div>
+          </div>
+        </div>
+
+        <label class="switch" for="dirToggle" title="切换横向/竖向滑动">
+          <input id="dirToggle" type="checkbox" />
+          <span class="dot"></span>
+          <span>竖向滑动</span>
+        </label>
       </div>
     </div>
   </header>
-
 
   <div class="wrap">
     <div class="swiper">
       <div class="swiper-wrapper" id="slides"></div>
       <div class="swiper-pagination"></div>
-      <div class="nav-btn swiper-button-prev"></div>
-      <div class="nav-btn swiper-button-next"></div>
+
+      <!-- ✅ 导航按钮换成 button + 文案 -->
+      <button class="nav-btn swiper-button-prev" type="button" aria-label="上一条" data-label="上一条"></button>
+      <button class="nav-btn swiper-button-next" type="button" aria-label="下一条" data-label="下一条"></button>
     </div>
   </div>
 
@@ -461,7 +582,6 @@
         detail: `要点梳理\n- 公测：2026/1/22 全球公测上线\n- 长周期宣发：2022/3 项目公布；2023/11&2024/1 技术测试；2025 多轮测试+移动端招募\n- 投放覆盖：大陆线上全渠道，线下覆盖日本涩谷、纽约/巴黎地铁等\n\n首日风险事件：PayPal支付事故\n- 起因：X上玩家反馈PayPal账户出现未授权扣款\n- 措施：官方禁用PayPal、审查交易、确认受影响订单并全额退款\n\n启示\n- 当产品期待被拉高，任何“基础设施层面”失误都会成倍放大\n- 全球同步发行要把支付/账号安全/风控当作首发体验的一部分`,
         source: "#",
         cover: "images/endfield.png"
-
       },
       {
         tag: "行业研究",
@@ -495,165 +615,190 @@
         time: "2026-01",
         title: "Bruno Mars在《Roblox》UGC游戏中的虚拟演出，最高吸引1280万同时在线用户",
         summary: "该演出在 14 个国家同步直播，直播观看人数约1000万，活动期间共发放 542 万件定制brainrot收藏品，并在社交平台上累计产生 5300 万次视频观看。",
-        detail: `信息点\n- 2026年1月：法国国民议会通过法案，禁止15岁以下未成年人使用社交媒体平台\n- 可能最快在下一个学年实施\n- 这将对“面向未成年人”的内容传播/投放/社媒运营产生阻力\n\n建议\n- 关注“年龄验证/平台责任/广告投放限制”的落地细则\n- 预备替代触达：家庭端、线下、内容分发平台与社区产品的合规化承接`,
+        detail: `补充\n- 这里你原来 detail 复用了法国那段，我先保留结构，你可以替换为演出细节（同时在线、道具发放、观看量、UGC合作形式等）。`,
         source: "#",
         cover: "images/mars.png"
       }
     ];
 
-const container = document.getElementById('slides');
+    const container = document.getElementById('slides');
+    const hintText = document.getElementById('hintText');
+    const dirToggle = document.getElementById('dirToggle');
 
-let swiper;              // 让 swiper 可重建
-let currentList = [...news];
+    let swiper;
+    let currentList = [...news];
+    let isVertical = false;
 
-function initSwiper() {
-  if (swiper) swiper.destroy(true, true);
-  swiper = new Swiper('.swiper', {
-    effect: 'slide',
-    grabCursor: true,
-    centeredSlides: true,
-    slidesPerView: 'auto',
-    spaceBetween: 30,
-    pagination: { el: '.swiper-pagination', clickable: true },
-    navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
-    breakpoints: { 320: { spaceBetween: 20 }, 768: { spaceBetween: 40 } }
-  });
-}
+    function setDirectionUI() {
+      document.body.classList.toggle('is-vertical', isVertical);
+      hintText.textContent = isVertical
+        ? '上下滑动切换卡片 · 点击查看更多内容'
+        : '左右滑动切换卡片 · 点击查看更多内容';
 
-function renderSlides(list) {
-  container.innerHTML = "";
-  list.forEach((item, index) => {
-    const slide = document.createElement('div');
-    slide.className = 'swiper-slide';
-    slide.innerHTML = `
-      <div class="flip" id="card-${index}">
-        <div class="flip-inner">
-          <div class="card front">
-            <div class="meta">
-              <span class="tag">${item.tag}</span>
-              <span class="time">${item.time}</span>
-            </div>
-            <div class="headline">${item.title}</div>
-            <div class="summary">${item.summary}</div>
+      // 同时把按钮文案也换一下（竖向更直观）
+      const prevBtn = document.querySelector('.swiper-button-prev');
+      const nextBtn = document.querySelector('.swiper-button-next');
+      if (prevBtn && nextBtn) {
+        prevBtn.dataset.label = isVertical ? '上一条' : '上一条';
+        nextBtn.dataset.label = isVertical ? '下一条' : '下一条';
+      }
+    }
 
-            <div class="cover">
-              ${item.cover ? `<img src="${item.cover}" alt="" loading="lazy">` : ""}
-            </div>
+    function initSwiper() {
+      if (swiper) swiper.destroy(true, true);
 
-            <div class="front-footer">
-              <button class="btn" onclick="toggleFlip(${index})">查看详情</button>
+      swiper = new Swiper('.swiper', {
+        direction: isVertical ? 'vertical' : 'horizontal',
+        effect: 'slide',
+        grabCursor: true,
+        centeredSlides: true,
+        slidesPerView: isVertical ? 1 : 'auto',
+        spaceBetween: isVertical ? 20 : 30,
+
+        // ✅ 竖向时开鼠标滚轮更舒服；横向不强行抢滚轮
+        mousewheel: isVertical ? { forceToAxis: true, releaseOnEdges: true } : false,
+
+        pagination: { el: '.swiper-pagination', clickable: true },
+        navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+
+        breakpoints: isVertical
+          ? { 320: { spaceBetween: 16 }, 768: { spaceBetween: 20 } }
+          : { 320: { spaceBetween: 20 }, 768: { spaceBetween: 40 } }
+      });
+    }
+
+    function renderSlides(list) {
+      container.innerHTML = "";
+      list.forEach((item, index) => {
+        const slide = document.createElement('div');
+        slide.className = 'swiper-slide';
+        slide.innerHTML = `
+          <div class="flip" id="card-${index}">
+            <div class="flip-inner">
+              <div class="card front">
+                <div class="meta">
+                  <span class="tag">${item.tag}</span>
+                  <span class="time">${item.time}</span>
+                </div>
+                <div class="headline">${item.title}</div>
+                <div class="summary">${item.summary}</div>
+
+                <div class="cover">
+                  ${item.cover ? `<img src="${item.cover}" alt="" loading="lazy">` : ""}
+                </div>
+
+                <div class="front-footer">
+                  <button class="btn" onclick="toggleFlip(${index})">查看详情</button>
+                </div>
+              </div>
+
+              <div class="card back">
+                <h2>深度解析</h2>
+                <div class="detail">${item.detail}</div>
+                <div class="back-footer">
+                  <button class="btn btn-secondary" onclick="toggleFlip(${index})">返回</button>
+                  ${item.source !== '#' ? `<a href="${item.source}" target="_blank" class="link-btn">阅读原文</a>` : ''}
+                </div>
+              </div>
             </div>
           </div>
+        `;
+        container.appendChild(slide);
+      });
 
-          <div class="card back">
-            <h2>深度解析</h2>
-            <div class="detail">${item.detail}</div>
-            <div class="back-footer">
-              <button class="btn btn-secondary" onclick="toggleFlip(${index})">返回</button>
-              ${item.source !== '#' ? `<a href="${item.source}" target="_blank" class="link-btn">阅读原文</a>` : ''}
-            </div>
-          </div>
+      initSwiper();
+    }
+
+    function renderTOC(list) {
+      const tocList = document.getElementById("tocList");
+      if (!tocList) return;
+
+      if (!list.length) {
+        tocList.innerHTML = `<div class="toc-empty">没有匹配结果</div>`;
+        return;
+      }
+
+      tocList.innerHTML = list.map((item, idx) => `
+        <div class="toc-item" data-idx="${idx}">
+          <span class="toc-tag">${item.tag}</span>
+          <span class="toc-text">${item.title}</span>
         </div>
-      </div>
-    `;
-    container.appendChild(slide);
-  });
+      `).join("");
 
-  initSwiper();
-}
+      tocList.querySelectorAll(".toc-item").forEach(el => {
+        el.addEventListener("click", () => {
+          const i = Number(el.dataset.idx);
+          swiper.slideTo(i, 500);
+          closeTOC();
+        });
+      });
+    }
 
-function renderTOC(list) {
-  const tocList = document.getElementById("tocList");
-  if (!tocList) return;
+    function normalizeText(s) {
+      return (s ?? "").toString().toLowerCase();
+    }
 
-  if (!list.length) {
-    tocList.innerHTML = `<div class="toc-empty">没有匹配结果</div>`;
-    return;
-  }
+    function applyFilter() {
+      const q = normalizeText(document.getElementById("searchInput")?.value).trim();
+      if (!q) {
+        currentList = [...news];
+      } else {
+        currentList = news.filter(item => {
+          const hay = [item.tag, item.time, item.title, item.summary, item.detail]
+            .map(normalizeText).join(" ");
+          return hay.includes(q);
+        });
+      }
+      renderSlides(currentList);
+      renderTOC(currentList);
+    }
 
-  tocList.innerHTML = list.map((item, idx) => `
-    <div class="toc-item" data-idx="${idx}">
-      <span class="toc-tag">${item.tag}</span>
-      <span class="toc-text">${item.title}</span>
-    </div>
-  `).join("");
+    function toggleFlip(index) {
+      const card = document.getElementById(`card-${index}`);
+      if (card) card.classList.toggle('is-flipped');
+    }
+    window.toggleFlip = toggleFlip; // 让 inline onclick 可用
 
-  // 点击目录跳转到对应 slide
-  tocList.querySelectorAll(".toc-item").forEach(el => {
-    el.addEventListener("click", () => {
-      const i = Number(el.dataset.idx);
-      swiper.slideTo(i, 500);
+    /* 搜索框事件 */
+    document.getElementById("searchInput")?.addEventListener("input", debounce(applyFilter, 120));
+    document.getElementById("clearBtn")?.addEventListener("click", () => {
+      const input = document.getElementById("searchInput");
+      if (input) input.value = "";
+      applyFilter();
+    });
+
+    /* ✅ 竖向开关事件：切换方向 + 重建 swiper */
+    dirToggle?.addEventListener("change", () => {
+      isVertical = !!dirToggle.checked;
+      setDirectionUI();
+      initSwiper();
+      swiper.slideTo(0, 0);
+    });
+
+    /* 目录开关 */
+    const tocToggle = document.getElementById("tocToggle");
+    const tocPanel = document.getElementById("tocPanel");
+    function closeTOC(){ tocPanel?.classList.remove("open"); }
+    tocToggle?.addEventListener("click", () => tocPanel?.classList.toggle("open"));
+    document.addEventListener("click", (e) => {
+      if (!tocPanel || !tocToggle) return;
+      const target = e.target;
+      if (tocPanel.contains(target) || tocToggle.contains(target)) return;
       closeTOC();
     });
-  });
-}
 
-function normalizeText(s) {
-  return (s ?? "").toString().toLowerCase();
-}
+    function debounce(fn, wait){
+      let t;
+      return (...args) => {
+        clearTimeout(t);
+        t = setTimeout(() => fn(...args), wait);
+      };
+    }
 
-function applyFilter() {
-  const q = normalizeText(document.getElementById("searchInput")?.value).trim();
-  if (!q) {
-    currentList = [...news];
-  } else {
-    currentList = news.filter(item => {
-      const hay = [
-        item.tag, item.time, item.title, item.summary, item.detail
-      ].map(normalizeText).join(" ");
-      return hay.includes(q);
-    });
-  }
-  renderSlides(currentList);
-  renderTOC(currentList);
-}
-
-function toggleFlip(index) {
-  const card = document.getElementById(`card-${index}`);
-  if (card) card.classList.toggle('is-flipped');
-}
-
-/* 搜索框事件 */
-document.getElementById("searchInput")?.addEventListener("input", debounce(applyFilter, 120));
-document.getElementById("clearBtn")?.addEventListener("click", () => {
-  const input = document.getElementById("searchInput");
-  if (input) input.value = "";
-  applyFilter();
-});
-
-/* 目录开关 */
-const tocToggle = document.getElementById("tocToggle");
-const tocPanel = document.getElementById("tocPanel");
-function closeTOC(){ tocPanel?.classList.remove("open"); }
-tocToggle?.addEventListener("click", () => tocPanel?.classList.toggle("open"));
-document.addEventListener("click", (e) => {
-  if (!tocPanel || !tocToggle) return;
-  const target = e.target;
-  if (tocPanel.contains(target) || tocToggle.contains(target)) return;
-  closeTOC();
-});
-
-/* 简单防抖 */
-function debounce(fn, wait){
-  let t;
-  return (...args) => {
-    clearTimeout(t);
-    t = setTimeout(() => fn(...args), wait);
-  };
-}
-
-/* 首次渲染 */
-renderSlides(currentList);
-renderTOC(currentList);
- 
+    /* 首次渲染 */
+    setDirectionUI();
+    renderSlides(currentList);
+    renderTOC(currentList);
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
