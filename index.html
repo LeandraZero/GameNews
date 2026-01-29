@@ -227,9 +227,11 @@
     }
 
     /* Front Side */
-    .front {
-      padding: 32px;
-    }
+    .front{
+  position: relative;     /* 给绝对定位一个参照 */
+  padding: 32px;
+  padding-bottom: 96px;   /* 预留按钮区域，避免挡住封面 */
+}
 
     .meta {
       display: flex;
@@ -291,25 +293,24 @@
     }
 
 
-.cover::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background: linear-gradient(to top, rgba(5,7,10,.65), rgba(5,7,10,0) 60%);
-  pointer-events:none;
-}
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 30% 30%, rgba(79, 110, 247, 0.2), transparent 70%);
+    .cover::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: linear-gradient(to top, rgba(5,7,10,.65), rgba(5,7,10,0) 60%);
+      pointer-events:none;
     }
 
-    .front-footer {
-      margin-top: 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+    .front-footer{
+    position: absolute;
+    left: 24px;
+    bottom: 24px;
+    margin-top: 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 12px;
+  }
 
     .btn {
       background: var(--text-primary);
@@ -648,6 +649,7 @@ renderTOC(currentList);
   </script>
 </body>
 </html>
+
 
 
 
