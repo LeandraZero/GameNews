@@ -571,33 +571,6 @@ body.is-vertical .swiper-button-next{
     body.is-vertical .swiper-button-prev::before{ content:"↑"; }
     body.is-vertical .swiper-button-next::before{ content:"↓"; }
 
-
-        /* ✅ TOC：时间样式 */
-    .toc-row{
-      display:flex;
-      align-items:flex-start;
-      justify-content: space-between;
-      gap: 10px;
-    }
-    
-    .toc-left{
-      min-width: 0;
-    }
-    
-    .toc-time{
-      flex: 0 0 auto;
-      font-size: 11px;
-      color: rgba(148,163,184,.85);
-      margin-top: 1px;
-      white-space: nowrap;
-    }
-    
-    .toc-text{
-      display:block;
-      color: #eaf0ff;
-      font-size: 13px;
-      line-height: 1.35;
-      margin-top: 2px;
     
       /* 防止长标题把时间挤掉 */
       overflow: hidden;
@@ -646,8 +619,6 @@ body.is-vertical .swiper-button-next{
          1) 右侧导航按钮：去文字 + 右侧悬浮
          ========================= */
       
-      /* ✅ 去掉按钮文字（你原来 nav-btn::after 用了 data-label） */
-      .nav-btn::after { content: ""; }
       
       /* ✅ 右侧悬浮：两个按钮竖排在右侧中间 */
       @media (min-width: 769px) {
@@ -716,7 +687,7 @@ body.is-vertical .swiper-button-next{
 <body>
   <header>
     <div class="title">精选游戏资讯</div>
-    <div class="hint" id="hintText">左右滑动切换卡片 · 点击查看更多内容</div>
+    <div class="hint" id="hintText">滑动切换卡片 · 点击查看更多内容</div>
 
     <!-- ✅ 两行布局 -->
     <div class="toolbar">
@@ -751,8 +722,8 @@ body.is-vertical .swiper-button-next{
       <div class="swiper-pagination"></div>
 
       <!-- ✅ 导航按钮换成 button + 文案 -->
-      <button class="nav-btn swiper-button-prev" type="button" aria-label="上一条" data-label="上一条"></button>
-      <button class="nav-btn swiper-button-next" type="button" aria-label="下一条" data-label="下一条"></button>
+      <button class="nav-btn swiper-button-prev" type="button" aria-label="上" data-label="上"></button>
+      <button class="nav-btn swiper-button-next" type="button" aria-label="下" data-label="下"></button>
     </div>
   </div>
 
@@ -824,8 +795,8 @@ body.is-vertical .swiper-button-next{
       const prevBtn = document.querySelector('.swiper-button-prev');
       const nextBtn = document.querySelector('.swiper-button-next');
       if (prevBtn && nextBtn) {
-        prevBtn.dataset.label = isVertical ? '上一条' : '上一条';
-        nextBtn.dataset.label = isVertical ? '下一条' : '下一条';
+        prevBtn.dataset.label = isVertical ? '上' : '上';
+        nextBtn.dataset.label = isVertical ? '下' : '下';
       }
     }
 
@@ -848,7 +819,7 @@ body.is-vertical .swiper-button-next{
 
         breakpoints: isVertical
           ? { 320: { spaceBetween: 16 }, 768: { spaceBetween: 20 } }
-          : { 320: { spaceBetween: 20 }, 768: { spaceBetween: 40 } }
+          : { 320: { spaceBetween: 20 }, 768: { spaceBetween: 40 } },
 
         slideToClickedSlide: true,
         watchSlidesProgress: true,
@@ -999,5 +970,6 @@ body.is-vertical .swiper-button-next{
   </script>
 </body>
 </html>
+
 
 
