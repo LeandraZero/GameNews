@@ -184,6 +184,21 @@
     }
 
     .cover::before {
+      .cover img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;   /* 关键：封面裁切铺满 */
+}
+
+.cover::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: linear-gradient(to top, rgba(5,7,10,.65), rgba(5,7,10,0) 60%);
+  pointer-events:none;
+}
       content: "";
       position: absolute;
       inset: 0;
@@ -328,7 +343,7 @@
         title: "《明日方舟：终末地》全球公测：四年节奏管理 + 全球展会背书",
         summary: "近四年宣发周期通过Gamescom/TGS/Apple Event等节点与全球投放建立认知；上线首日PayPal盗刷争议引发大规模负面舆情，暴露全球自运营“基础设施优先验证”的必要性。",
         detail: `要点梳理\n- 公测：2026/1/22 全球公测上线\n- 长周期宣发：2022/3 项目公布；2023/11&2024/1 技术测试；2025 多轮测试+移动端招募\n- 投放覆盖：大陆线上全渠道，线下覆盖日本涩谷、纽约/巴黎地铁等\n\n首日风险事件：PayPal支付事故\n- 起因：X上玩家反馈PayPal账户出现未授权扣款\n- 措施：官方禁用PayPal、审查交易、确认受影响订单并全额退款\n\n启示\n- 当产品期待被拉高，任何“基础设施层面”失误都会成倍放大\n- 全球同步发行要把支付/账号安全/风控当作首发体验的一部分`,
-        source: "#"
+        source: "#",
         cover: "./images/endfield.jpg"
 
       },
@@ -338,7 +353,7 @@
         title: "Sensor Tower：2025生成式AI成为移动生态关键动力",
         summary: "AI助手扩大到新场景；非游戏收入超过游戏（AI/社交/视频/效率工具带动）；移动游戏IAP约817.5亿美元但增速放缓，未来更要抢“时间”。",
         detail: `核心结论\n- 生成式AI定义2025移动领域：AI助手拥有庞大用户群并扩展到更多应用场景\n- 非游戏应用收入首次超过游戏应用：AI/社交媒体/视频流媒体增长显著\n- 注意力经济：游戏需要与社交、短剧、AI应用争夺用户时间\n\n市场动态\n- 2025移动游戏IAP收入：817.5亿美元，同比+1.3%\n- 下载量：连续第二年下降，本次-7.2%至504亿\n- 总游戏时长：4446.3亿小时，同比+0.9%`,
-        source: "https://sensortower.com/report/state-of-mobile-2026/download"
+        source: "https://sensortower.com/report/state-of-mobile-2026/download",
         cover: "images/endfield.jpg"
       },
       {
@@ -347,7 +362,7 @@
         title: "法国拟禁15岁以下未成年人使用社交媒体",
         summary: "法国国民议会通过相关法案并推动加速立法，最快下学年实施；巴西等国也在推进类似立法，需要提前评估青少年触达策略与合规风险。",
         detail: `信息点\n- 2026年1月：法国国民议会通过法案，禁止15岁以下未成年人使用社交媒体平台\n- 可能最快在下一个学年实施\n- 这将对“面向未成年人”的内容传播/投放/社媒运营产生阻力\n\n建议\n- 关注“年龄验证/平台责任/广告投放限制”的落地细则\n- 预备替代触达：家庭端、线下、内容分发平台与社区产品的合规化承接`,
-        source: "#"
+        source: "#",
         cover: "images/endfield.jpg"
       },
       {
@@ -356,7 +371,7 @@
         title: "2026年首批版号发布：进口版号含腾讯《彩虹六号：攻势》等",
         summary: "近一年版号下发数量呈间断性增长；1月国产177个、进口含腾讯/金山世游等产品过审，适合用作市场节奏与竞品排期判断参考。",
         detail: `要点\n- 2026年首批游戏版号发布\n- 进口版号：腾讯《彩虹六号：攻势》、金山世游《愤怒的小鸟：经典归来》等过审\n- 国产：本月177个，为近一年以来次高\n\n市场观察\n- 版号供给节奏回升会带来新品密度上升，宣发排期与节点竞争可能加剧。`,
-        source: "https://www.nppa.gov.cn/bsfw/jggs/yxspjg/gcwlyxspxx/202601/t20260126_947903.html"
+        source: "https://www.nppa.gov.cn/bsfw/jggs/yxspjg/gcwlyxspxx/202601/t20260126_947903.html",
         cover: "images/endfield.jpg"
       },
       {
@@ -365,7 +380,7 @@
         title: "Bruno Mars在《Roblox》UGC游戏中的虚拟演出，最高吸引1280万同时在线用户",
         summary: "该演出在 14 个国家同步直播，直播观看人数约1000万，活动期间共发放 542 万件定制brainrot收藏品，并在社交平台上累计产生 5300 万次视频观看。",
         detail: `信息点\n- 2026年1月：法国国民议会通过法案，禁止15岁以下未成年人使用社交媒体平台\n- 可能最快在下一个学年实施\n- 这将对“面向未成年人”的内容传播/投放/社媒运营产生阻力\n\n建议\n- 关注“年龄验证/平台责任/广告投放限制”的落地细则\n- 预备替代触达：家庭端、线下、内容分发平台与社区产品的合规化承接`,
-        source: "#"
+        source: "#",
         cover: "mars.png"
       }
     ];
@@ -386,7 +401,9 @@
               </div>
               <div class="headline">${item.title}</div>
               <div class="summary">${item.summary}</div>
-              <div class="cover"></div>
+              <div class="cover">
+      ${item.cover ? `<img src="${item.cover}" alt="" loading="lazy">` : ""}
+    </div>
               <div class="front-footer">
                 <button class="btn" onclick="toggleFlip(${index})">查看详情</button>
               </div>
@@ -433,4 +450,5 @@
   </script>
 </body>
 </html>
+
 
